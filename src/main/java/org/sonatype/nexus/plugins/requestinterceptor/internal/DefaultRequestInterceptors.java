@@ -36,14 +36,14 @@ public class DefaultRequestInterceptors
     @Inject
     private Logger logger;
 
-    private final Map<String, RequestInterceptor> generators;
+    private final Map<String, RequestInterceptor> interceptors;
 
     @Inject
     public DefaultRequestInterceptors( final RepositoryRegistry repositories,
                                        final Map<String, RequestInterceptor> generators )
     {
         this.repositories = repositories;
-        this.generators = generators;
+        interceptors = generators;
         configurations = new HashMap<String, List<RequestInterceptorConfiguration>>();
         requestProcessor = new RequestInterceptorRequestProcessor( this );
     }
@@ -56,24 +56,29 @@ public class DefaultRequestInterceptors
         {
             return;
         }
+        String cannonicalPath = requestPath;
+        if ( !cannonicalPath.startsWith( "/" ) )
+        {
+            cannonicalPath = "/" + cannonicalPath;
+        }
         for ( final RequestInterceptorConfiguration configuration : configurations )
         {
             final Action expectedAction = configuration.action();
             if ( ( expectedAction == null || action.equals( expectedAction ) )
-                && SelectorUtils.matchPath( configuration.mapping(), requestPath ) )
+                && SelectorUtils.matchPath( configuration.mapping(), cannonicalPath ) )
             {
-                final RequestInterceptor generator = generators.get( configuration.generator() );
-                if ( generator == null )
+                final RequestInterceptor interceptor = interceptors.get( configuration.generator() );
+                if ( interceptor == null )
                 {
                     logger.warn(
                         "Request Interceptor [{}] could not be executed as interceptor [{}] could not be found",
-                        requestPath, configuration.generator() );
+                        cannonicalPath, configuration.generator() );
                 }
                 else
                 {
                     try
                     {
-                        generator.execute( repositories.getRepository( repositoryId ), requestPath, action );
+                        interceptor.execute( repositories.getRepository( repositoryId ), cannonicalPath, action );
                         // first generator wins
                         break;
                     }
@@ -81,7 +86,7 @@ public class DefaultRequestInterceptors
                     {
                         logger.warn(
                             "Request Interceptor [{}] could not be executed as repository [{}] could not be found",
-                            requestPath, repositoryId );
+                            cannonicalPath, repositoryId );
                     }
                 }
             }
