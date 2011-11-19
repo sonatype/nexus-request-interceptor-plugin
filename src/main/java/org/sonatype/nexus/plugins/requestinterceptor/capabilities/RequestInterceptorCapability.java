@@ -43,14 +43,13 @@ public class RequestInterceptorCapability
     @Override
     public void create( final Map<String, String> properties )
     {
-        load( properties );
+        configuration = createConfiguration( properties );
     }
 
     @Override
     public void load( final Map<String, String> properties )
     {
-        configuration = createConfiguration( properties );
-        requestInterceptors.addConfiguration( configuration );
+        create( properties );
     }
 
     @Override
@@ -59,13 +58,20 @@ public class RequestInterceptorCapability
         final RequestInterceptorConfiguration newConfiguration = createConfiguration( properties );
         if ( !configuration.equals( newConfiguration ) )
         {
-            remove();
+            passivate();
             create( properties );
+            activate();
         }
     }
 
     @Override
-    public void remove()
+    public void activate()
+    {
+        requestInterceptors.addConfiguration( configuration );
+    }
+
+    @Override
+    public void passivate()
     {
         requestInterceptors.removeConfiguration( configuration );
     }
