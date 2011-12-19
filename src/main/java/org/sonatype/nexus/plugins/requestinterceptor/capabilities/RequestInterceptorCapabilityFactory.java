@@ -18,15 +18,18 @@
  */
 package org.sonatype.nexus.plugins.requestinterceptor.capabilities;
 
+import static org.sonatype.nexus.plugins.requestinterceptor.capabilities.RequestInterceptorCapability.TYPE_ID;
+
 import javax.inject.Inject;
 import javax.inject.Named;
 import javax.inject.Singleton;
 
 import org.sonatype.nexus.plugins.capabilities.api.Capability;
 import org.sonatype.nexus.plugins.capabilities.api.CapabilityFactory;
+import org.sonatype.nexus.plugins.capabilities.api.CapabilityIdentity;
 import org.sonatype.nexus.plugins.requestinterceptor.RequestInterceptors;
 
-@Named( RequestInterceptorCapability.ID )
+@Named( TYPE_ID )
 @Singleton
 public class RequestInterceptorCapabilityFactory
     implements CapabilityFactory
@@ -41,7 +44,7 @@ public class RequestInterceptorCapabilityFactory
     }
 
     @Override
-    public Capability create( final String id )
+    public Capability create( final CapabilityIdentity id )
     {
         return new RequestInterceptorCapability( id, requestInterceptors );
     }

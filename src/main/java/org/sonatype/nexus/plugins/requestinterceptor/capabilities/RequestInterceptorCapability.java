@@ -21,6 +21,7 @@ package org.sonatype.nexus.plugins.requestinterceptor.capabilities;
 import java.util.Map;
 
 import org.sonatype.nexus.plugins.capabilities.api.AbstractCapability;
+import org.sonatype.nexus.plugins.capabilities.api.CapabilityIdentity;
 import org.sonatype.nexus.plugins.requestinterceptor.RequestInterceptorConfiguration;
 import org.sonatype.nexus.plugins.requestinterceptor.RequestInterceptors;
 
@@ -28,13 +29,13 @@ public class RequestInterceptorCapability
     extends AbstractCapability
 {
 
-    public static final String ID = "requestInterceptorCapability";
+    public static final String TYPE_ID = "request-interceptor";
 
     private final RequestInterceptors requestInterceptors;
 
     private RequestInterceptorConfiguration configuration;
 
-    public RequestInterceptorCapability( final String id, final RequestInterceptors requestInterceptors )
+    public RequestInterceptorCapability( final CapabilityIdentity id, final RequestInterceptors requestInterceptors )
     {
         super( id );
         this.requestInterceptors = requestInterceptors;

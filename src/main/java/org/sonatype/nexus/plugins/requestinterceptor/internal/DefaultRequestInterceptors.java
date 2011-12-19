@@ -23,13 +23,12 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
 import javax.inject.Inject;
 import javax.inject.Named;
 import javax.inject.Singleton;
 
 import org.codehaus.plexus.util.SelectorUtils;
-import org.slf4j.Logger;
+import org.sonatype.nexus.logging.AbstractLoggingComponent;
 import org.sonatype.nexus.plugins.requestinterceptor.RequestInterceptor;
 import org.sonatype.nexus.plugins.requestinterceptor.RequestInterceptorConfiguration;
 import org.sonatype.nexus.plugins.requestinterceptor.RequestInterceptors;
@@ -42,6 +41,7 @@ import org.sonatype.nexus.proxy.repository.RequestProcessor;
 @Named
 @Singleton
 public class DefaultRequestInterceptors
+    extends AbstractLoggingComponent
     implements RequestInterceptors
 {
 
@@ -50,9 +50,6 @@ public class DefaultRequestInterceptors
     private final Map<String, List<RequestInterceptorConfiguration>> configurations;
 
     private final RequestProcessor requestProcessor;
-
-    @Inject
-    private Logger logger;
 
     private final Map<String, RequestInterceptor> interceptors;
 
@@ -64,11 +61,14 @@ public class DefaultRequestInterceptors
         interceptors = generators;
         configurations = new HashMap<String, List<RequestInterceptorConfiguration>>();
         requestProcessor = new RequestInterceptorRequestProcessor( this );
+
+        getLogger().debug( "Interceptors {})", interceptors );
     }
 
     @Override
     public void handle( final String repositoryId, final String requestPath, final Action action )
     {
+        getLogger().debug( "Handling request for {}:{}({})", new Object[]{ repositoryId, requestPath, action } );
         final Collection<RequestInterceptorConfiguration> configurations = getConfigurations( repositoryId );
         if ( configurations == null )
         {
@@ -88,22 +88,25 @@ public class DefaultRequestInterceptors
                 final RequestInterceptor interceptor = interceptors.get( configuration.generator() );
                 if ( interceptor == null )
                 {
-                    logger.warn(
-                        "Request Interceptor [{}] could not be executed as interceptor [{}] could not be found",
+                    getLogger().warn(
+                        "Request [{}] could not be handled as interceptor [{}] could not be found",
                         cannonicalPath, configuration.generator() );
                 }
                 else
                 {
                     try
                     {
+                        getLogger().debug(
+                            "Matched {}:{}({}) -> {}", new Object[]{ repositoryId, requestPath, action, interceptor }
+                        );
                         interceptor.execute( repositories.getRepository( repositoryId ), cannonicalPath, action );
                         // first generator wins
                         break;
                     }
                     catch ( final NoSuchRepositoryException e )
                     {
-                        logger.warn(
-                            "Request Interceptor [{}] could not be executed as repository [{}] could not be found",
+                        getLogger().warn(
+                            "Request [{}] could not be handled as repository [{}] could not be found",
                             cannonicalPath, repositoryId );
                     }
                 }
@@ -114,6 +117,7 @@ public class DefaultRequestInterceptors
     @Override
     public void addConfiguration( final RequestInterceptorConfiguration configuration )
     {
+        getLogger().debug( "Adding {}", configuration );
         List<RequestInterceptorConfiguration> configs = configurations.get( configuration.repositoryId() );
         if ( configs == null )
         {
@@ -125,18 +129,19 @@ public class DefaultRequestInterceptors
         {
             final Repository repository = repositories.getRepository( configuration.repositoryId() );
             repository.getRequestProcessors().put( requestProcessorKey( configuration.repositoryId() ),
-                requestProcessor );
+                                                   requestProcessor );
         }
         catch ( final NoSuchRepositoryException e )
         {
-            logger.warn( "Could not enable request interceptors for repository [{}] as repository does not exist",
-                configuration.repositoryId() );
+            getLogger().warn( "Could not enable request interceptors for repository [{}] as repository does not exist",
+                              configuration.repositoryId() );
         }
     }
 
     @Override
     public void removeConfiguration( final RequestInterceptorConfiguration configuration )
     {
+        getLogger().debug( "Removing {}", configuration );
         final List<RequestInterceptorConfiguration> configs = configurations.get( configuration.repositoryId() );
         if ( configs != null )
         {
@@ -149,8 +154,8 @@ public class DefaultRequestInterceptors
         }
         catch ( final NoSuchRepositoryException e )
         {
-            logger.warn( "Could not disable request interceptors for repository [{}] as repository does not exist",
-                configuration.repositoryId() );
+            getLogger().warn( "Could not disable request interceptors for repository [{}] as repository does not exist",
+                              configuration.repositoryId() );
         }
     }
 

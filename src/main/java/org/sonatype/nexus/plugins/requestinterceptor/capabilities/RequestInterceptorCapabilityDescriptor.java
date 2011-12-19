@@ -18,30 +18,35 @@
  */
 package org.sonatype.nexus.plugins.requestinterceptor.capabilities;
 
+import static org.sonatype.nexus.plugins.capabilities.api.CapabilityType.capabilityType;
+import static org.sonatype.nexus.plugins.requestinterceptor.capabilities.RequestInterceptorCapability.TYPE_ID;
+
 import javax.inject.Named;
 import javax.inject.Singleton;
 
 import org.sonatype.nexus.formfields.FormField;
 import org.sonatype.nexus.formfields.RepoOrGroupComboFormField;
+import org.sonatype.nexus.plugins.capabilities.api.CapabilityType;
 import org.sonatype.nexus.plugins.capabilities.api.descriptor.AbstractCapabilityDescriptor;
 import org.sonatype.nexus.plugins.capabilities.api.descriptor.CapabilityDescriptor;
 
 @Singleton
-@Named( RequestInterceptorCapability.ID )
+@Named( TYPE_ID )
 public class RequestInterceptorCapabilityDescriptor
     extends AbstractCapabilityDescriptor
     implements CapabilityDescriptor
 {
 
-    public static final String ID = RequestInterceptorCapability.ID;
+    private static final CapabilityType TYPE = capabilityType( TYPE_ID );
 
     public static final String REPO_OR_GROUP_ID = "repoOrGroup";
 
     public RequestInterceptorCapabilityDescriptor()
     {
         super(
-            ID,
+            TYPE,
             "Request Interceptor capability",
+            "Intercepts a request to specified repository content and forwards it to selected generator",
             new RepoOrGroupComboFormField( REPO_OR_GROUP_ID, FormField.MANDATORY ),
             new RequestInterceptorMappingFormField(),
             new RequestInterceptorGeneratorFormField()
