@@ -20,8 +20,8 @@ package org.sonatype.nexus.plugins.requestinterceptor.capabilities;
 
 import java.util.Map;
 
-import org.sonatype.nexus.plugins.capabilities.api.AbstractCapability;
-import org.sonatype.nexus.plugins.capabilities.api.CapabilityIdentity;
+import org.sonatype.nexus.plugins.capabilities.support.AbstractCapability;
+import org.sonatype.nexus.plugins.capabilities.CapabilityIdentity;
 import org.sonatype.nexus.plugins.requestinterceptor.RequestInterceptorConfiguration;
 import org.sonatype.nexus.plugins.requestinterceptor.RequestInterceptors;
 
