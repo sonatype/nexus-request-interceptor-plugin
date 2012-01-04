@@ -28,12 +28,12 @@ import org.sonatype.nexus.formfields.FormField;
 import org.sonatype.nexus.formfields.RepoOrGroupComboFormField;
 import org.sonatype.nexus.plugins.capabilities.CapabilityDescriptor;
 import org.sonatype.nexus.plugins.capabilities.CapabilityType;
-import org.sonatype.nexus.plugins.capabilities.support.AbstractCapabilityDescriptor;
+import org.sonatype.nexus.plugins.capabilities.support.CapabilityDescriptorSupport;
 
 @Singleton
 @Named( TYPE_ID )
 public class RequestInterceptorCapabilityDescriptor
-    extends AbstractCapabilityDescriptor
+    extends CapabilityDescriptorSupport
     implements CapabilityDescriptor
 {
 

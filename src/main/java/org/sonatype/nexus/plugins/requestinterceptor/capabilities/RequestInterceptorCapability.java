@@ -20,13 +20,13 @@ package org.sonatype.nexus.plugins.requestinterceptor.capabilities;
 
 import java.util.Map;
 
-import org.sonatype.nexus.plugins.capabilities.support.AbstractCapability;
 import org.sonatype.nexus.plugins.capabilities.CapabilityIdentity;
+import org.sonatype.nexus.plugins.capabilities.support.CapabilitySupport;
 import org.sonatype.nexus.plugins.requestinterceptor.RequestInterceptorConfiguration;
 import org.sonatype.nexus.plugins.requestinterceptor.RequestInterceptors;
 
 public class RequestInterceptorCapability
-    extends AbstractCapability
+    extends CapabilitySupport
 {
 
     public static final String TYPE_ID = "request-interceptor";
