@@ -20,7 +20,7 @@ package org.sonatype.nexus.plugins.requestinterceptor.capabilities;
 
 import java.util.Map;
 
-import org.sonatype.nexus.plugins.capabilities.CapabilityIdentity;
+import org.sonatype.nexus.plugins.capabilities.CapabilityContext;
 import org.sonatype.nexus.plugins.capabilities.support.CapabilitySupport;
 import org.sonatype.nexus.plugins.requestinterceptor.RequestInterceptorConfiguration;
 import org.sonatype.nexus.plugins.requestinterceptor.RequestInterceptors;
@@ -35,9 +35,10 @@ public class RequestInterceptorCapability
 
     private RequestInterceptorConfiguration configuration;
 
-    public RequestInterceptorCapability( final CapabilityIdentity id, final RequestInterceptors requestInterceptors )
+    public RequestInterceptorCapability( final CapabilityContext context,
+                                         final RequestInterceptors requestInterceptors )
     {
-        super( id );
+        super( context );
         this.requestInterceptors = requestInterceptors;
     }
 

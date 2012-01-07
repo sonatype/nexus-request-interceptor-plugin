@@ -45,10 +45,9 @@ public class RequestInterceptorCapabilityFactory
     }
 
     @Override
-    public Capability create( final CapabilityIdentity id,
-                              final CapabilityContext context)
+    public Capability create( final CapabilityContext context)
     {
-        return new RequestInterceptorCapability( id, requestInterceptors );
+        return new RequestInterceptorCapability( context, requestInterceptors );
     }
 
 }
