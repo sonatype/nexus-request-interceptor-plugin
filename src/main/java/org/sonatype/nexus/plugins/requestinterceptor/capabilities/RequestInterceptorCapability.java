@@ -18,10 +18,14 @@
  */
 package org.sonatype.nexus.plugins.requestinterceptor.capabilities;
 
+import static com.google.common.base.Preconditions.checkNotNull;
+
 import java.util.Map;
 
 import org.sonatype.nexus.plugins.capabilities.CapabilityContext;
+import org.sonatype.nexus.plugins.capabilities.Condition;
 import org.sonatype.nexus.plugins.capabilities.support.CapabilitySupport;
+import org.sonatype.nexus.plugins.capabilities.support.condition.Conditions;
 import org.sonatype.nexus.plugins.requestinterceptor.RequestInterceptorConfiguration;
 import org.sonatype.nexus.plugins.requestinterceptor.RequestInterceptors;
 
@@ -33,49 +37,36 @@ public class RequestInterceptorCapability
 
     private final RequestInterceptors requestInterceptors;
 
+    private final Conditions conditions;
+
     private RequestInterceptorConfiguration configuration;
 
     public RequestInterceptorCapability( final CapabilityContext context,
-                                         final RequestInterceptors requestInterceptors )
+                                         final RequestInterceptors requestInterceptors,
+                                         final Conditions conditions )
     {
         super( context );
-        this.requestInterceptors = requestInterceptors;
+        this.requestInterceptors = checkNotNull( requestInterceptors );
+        this.conditions = checkNotNull( conditions );
     }
 
     @Override
-    public void create( final Map<String, String> properties )
+    public void onActivate()
     {
-        configuration = createConfiguration( properties );
-    }
-
-    @Override
-    public void load( final Map<String, String> properties )
-    {
-        create( properties );
-    }
-
-    @Override
-    public void update( final Map<String, String> properties )
-    {
-        final RequestInterceptorConfiguration newConfiguration = createConfiguration( properties );
-        if ( !configuration.equals( newConfiguration ) )
-        {
-            passivate();
-            create( properties );
-            activate();
-        }
-    }
-
-    @Override
-    public void activate()
-    {
+        configuration = createConfiguration( context().properties() );
         requestInterceptors.addConfiguration( configuration );
     }
 
     @Override
-    public void passivate()
+    public void onPassivate()
     {
         requestInterceptors.removeConfiguration( configuration );
+    }
+
+    @Override
+    public Condition activationCondition()
+    {
+        return conditions.capabilities().passivateCapabilityDuringUpdate( context().id() );
     }
 
     protected RequestInterceptorConfiguration createConfiguration( final Map<String, String> properties )

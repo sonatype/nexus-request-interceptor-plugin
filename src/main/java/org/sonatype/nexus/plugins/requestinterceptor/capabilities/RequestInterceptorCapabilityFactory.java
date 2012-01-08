@@ -18,6 +18,7 @@
  */
 package org.sonatype.nexus.plugins.requestinterceptor.capabilities;
 
+import static com.google.common.base.Preconditions.checkNotNull;
 import static org.sonatype.nexus.plugins.requestinterceptor.capabilities.RequestInterceptorCapability.TYPE_ID;
 
 import javax.inject.Inject;
@@ -27,7 +28,7 @@ import javax.inject.Singleton;
 import org.sonatype.nexus.plugins.capabilities.Capability;
 import org.sonatype.nexus.plugins.capabilities.CapabilityContext;
 import org.sonatype.nexus.plugins.capabilities.CapabilityFactory;
-import org.sonatype.nexus.plugins.capabilities.CapabilityIdentity;
+import org.sonatype.nexus.plugins.capabilities.support.condition.Conditions;
 import org.sonatype.nexus.plugins.requestinterceptor.RequestInterceptors;
 
 @Named( TYPE_ID )
@@ -38,16 +39,20 @@ public class RequestInterceptorCapabilityFactory
 
     private final RequestInterceptors requestInterceptors;
 
+    private final Conditions conditions;
+
     @Inject
-    RequestInterceptorCapabilityFactory( final RequestInterceptors requestInterceptors )
+    RequestInterceptorCapabilityFactory( final RequestInterceptors requestInterceptors,
+                                         final Conditions conditions )
     {
-        this.requestInterceptors = requestInterceptors;
+        this.requestInterceptors = checkNotNull( requestInterceptors );
+        this.conditions = checkNotNull( conditions );
     }
 
     @Override
-    public Capability create( final CapabilityContext context)
+    public Capability create( final CapabilityContext context )
     {
-        return new RequestInterceptorCapability( context, requestInterceptors );
+        return new RequestInterceptorCapability( context, requestInterceptors, conditions );
     }
 
 }
