@@ -26,7 +26,6 @@ import javax.inject.Named;
 import javax.inject.Singleton;
 
 import org.sonatype.nexus.plugins.capabilities.Capability;
-import org.sonatype.nexus.plugins.capabilities.CapabilityContext;
 import org.sonatype.nexus.plugins.capabilities.CapabilityFactory;
 import org.sonatype.nexus.plugins.capabilities.support.condition.Conditions;
 import org.sonatype.nexus.plugins.requestinterceptor.RequestInterceptors;
@@ -50,9 +49,9 @@ public class RequestInterceptorCapabilityFactory
     }
 
     @Override
-    public Capability create( final CapabilityContext context )
+    public Capability create()
     {
-        return new RequestInterceptorCapability( context, requestInterceptors, conditions );
+        return new RequestInterceptorCapability( requestInterceptors, conditions );
     }
 
 }

@@ -22,7 +22,6 @@ import static com.google.common.base.Preconditions.checkNotNull;
 
 import java.util.Map;
 
-import org.sonatype.nexus.plugins.capabilities.CapabilityContext;
 import org.sonatype.nexus.plugins.capabilities.Condition;
 import org.sonatype.nexus.plugins.capabilities.support.CapabilitySupport;
 import org.sonatype.nexus.plugins.capabilities.support.condition.Conditions;
@@ -41,11 +40,9 @@ public class RequestInterceptorCapability
 
     private RequestInterceptorConfiguration configuration;
 
-    public RequestInterceptorCapability( final CapabilityContext context,
-                                         final RequestInterceptors requestInterceptors,
+    public RequestInterceptorCapability( final RequestInterceptors requestInterceptors,
                                          final Conditions conditions )
     {
-        super( context );
         this.requestInterceptors = checkNotNull( requestInterceptors );
         this.conditions = checkNotNull( conditions );
     }
