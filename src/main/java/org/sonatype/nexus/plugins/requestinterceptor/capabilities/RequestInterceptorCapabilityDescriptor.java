@@ -19,7 +19,7 @@
 package org.sonatype.nexus.plugins.requestinterceptor.capabilities;
 
 import static org.sonatype.nexus.plugins.capabilities.CapabilityType.capabilityType;
-import static org.sonatype.nexus.plugins.requestinterceptor.capabilities.RequestInterceptorCapability.TYPE_ID;
+import static org.sonatype.nexus.plugins.requestinterceptor.capabilities.RequestInterceptorCapabilityDescriptor.TYPE_ID;
 
 import javax.inject.Named;
 import javax.inject.Singleton;
@@ -36,6 +36,8 @@ public class RequestInterceptorCapabilityDescriptor
     extends CapabilityDescriptorSupport
     implements CapabilityDescriptor
 {
+
+    public static final String TYPE_ID = "request-interceptor";
 
     private static final CapabilityType TYPE = capabilityType( TYPE_ID );
 

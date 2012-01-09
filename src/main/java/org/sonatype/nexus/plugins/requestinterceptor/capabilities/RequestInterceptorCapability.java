@@ -19,8 +19,11 @@
 package org.sonatype.nexus.plugins.requestinterceptor.capabilities;
 
 import static com.google.common.base.Preconditions.checkNotNull;
+import static org.sonatype.nexus.plugins.requestinterceptor.capabilities.RequestInterceptorCapabilityDescriptor.TYPE_ID;
 
 import java.util.Map;
+import javax.inject.Inject;
+import javax.inject.Named;
 
 import org.sonatype.nexus.plugins.capabilities.Condition;
 import org.sonatype.nexus.plugins.capabilities.support.CapabilitySupport;
@@ -28,11 +31,10 @@ import org.sonatype.nexus.plugins.capabilities.support.condition.Conditions;
 import org.sonatype.nexus.plugins.requestinterceptor.RequestInterceptorConfiguration;
 import org.sonatype.nexus.plugins.requestinterceptor.RequestInterceptors;
 
+@Named( TYPE_ID )
 public class RequestInterceptorCapability
     extends CapabilitySupport
 {
-
-    public static final String TYPE_ID = "request-interceptor";
 
     private final RequestInterceptors requestInterceptors;
 
@@ -40,6 +42,7 @@ public class RequestInterceptorCapability
 
     private RequestInterceptorConfiguration configuration;
 
+    @Inject
     public RequestInterceptorCapability( final RequestInterceptors requestInterceptors,
                                          final Conditions conditions )
     {
