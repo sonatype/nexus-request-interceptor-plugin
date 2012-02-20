@@ -41,7 +41,7 @@ public class RequestInterceptorCapabilityDescriptor
 
     private static final CapabilityType TYPE = capabilityType( TYPE_ID );
 
-    public static final String REPO_OR_GROUP_ID = "repoOrGroup";
+    public static final String REPOSITORY = "repositoryId";
 
     public RequestInterceptorCapabilityDescriptor()
     {
@@ -49,7 +49,7 @@ public class RequestInterceptorCapabilityDescriptor
             TYPE,
             "Request Interceptor capability",
             "Intercepts a request to specified repository content and forwards it to selected generator",
-            new RepoOrGroupComboFormField( REPO_OR_GROUP_ID, FormField.MANDATORY ),
+            new RepoOrGroupComboFormField( REPOSITORY, FormField.MANDATORY ),
             new RequestInterceptorMappingFormField(),
             new RequestInterceptorGeneratorFormField()
         );

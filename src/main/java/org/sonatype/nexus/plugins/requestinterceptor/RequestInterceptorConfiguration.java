@@ -167,10 +167,8 @@ public class RequestInterceptorConfiguration
 
     private static String repository( final Map<String, String> properties )
     {
-        String repositoryId = properties.get( RequestInterceptorCapabilityDescriptor.REPO_OR_GROUP_ID );
-        repositoryId = repositoryId.replaceFirst( "repo_", "" );
-        repositoryId = repositoryId.replaceFirst( "group_", "" );
-        return repositoryId;
+        final String value = properties.get( RequestInterceptorCapabilityDescriptor.REPOSITORY );
+        return value;
     }
 
     private static Action action( final Map<String, String> properties )
