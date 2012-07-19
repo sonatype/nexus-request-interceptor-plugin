@@ -28,6 +28,7 @@ import javax.inject.Named;
 import org.sonatype.nexus.plugins.capabilities.Condition;
 import org.sonatype.nexus.plugins.capabilities.support.CapabilitySupport;
 import org.sonatype.nexus.plugins.capabilities.support.condition.Conditions;
+import org.sonatype.nexus.plugins.capabilities.support.condition.RepositoryConditions;
 import org.sonatype.nexus.plugins.requestinterceptor.RequestInterceptorConfiguration;
 import org.sonatype.nexus.plugins.requestinterceptor.RequestInterceptors;
 
@@ -51,9 +52,37 @@ public class RequestInterceptorCapability
     }
 
     @Override
-    public void onActivate()
+    public void onCreate()
+        throws Exception
     {
         configuration = createConfiguration( context().properties() );
+    }
+
+    @Override
+    public void onLoad()
+        throws Exception
+    {
+        onCreate();
+    }
+
+    @Override
+    public void onUpdate()
+        throws Exception
+    {
+        onRemove();
+        onCreate();
+    }
+
+    @Override
+    public void onRemove()
+        throws Exception
+    {
+        configuration = null;
+    }
+
+    @Override
+    public void onActivate()
+    {
         requestInterceptors.addConfiguration( configuration );
     }
 
@@ -66,12 +95,54 @@ public class RequestInterceptorCapability
     @Override
     public Condition activationCondition()
     {
-        return conditions.capabilities().passivateCapabilityDuringUpdate( context().id() );
+        return conditions.logical().and(
+            conditions.repository().repositoryIsInService( new RepositoryConditions.RepositoryId()
+            {
+                @Override
+                public String get()
+                {
+                    return isConfigured() ? configuration.repositoryId() : null;
+                }
+            } ),
+            conditions.capabilities().passivateCapabilityDuringUpdate( context().id() )
+        );
+    }
+
+    @Override
+    public Condition validityCondition()
+    {
+        return conditions.repository().repositoryExists( new RepositoryConditions.RepositoryId()
+        {
+            @Override
+            public String get()
+            {
+                return isConfigured() ? configuration.repositoryId() : null;
+            }
+        } );
+    }
+
+    private boolean isConfigured()
+    {
+        return configuration != null;
     }
 
     protected RequestInterceptorConfiguration createConfiguration( final Map<String, String> properties )
     {
         return new RequestInterceptorConfiguration( properties );
+    }
+
+    @Override
+    public String toString()
+    {
+        String id = null;
+        if ( context() != null )
+        {
+            id = "'" + context().id() + "'";
+        }
+        return getClass().getSimpleName() + "{" +
+            "id=" + id +
+            ", config=" + configuration +
+            '}';
     }
 
 }
