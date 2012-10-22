@@ -131,6 +131,11 @@ public class RequestInterceptorCapability
         return new RequestInterceptorConfiguration( properties );
     }
 
+    protected RequestInterceptorConfiguration getConfiguration()
+    {
+        return configuration;
+    }
+
     @Override
     public String toString()
     {
